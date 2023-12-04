@@ -24,6 +24,7 @@ class PhaseVocoder
         std::unique_ptr<juce::dsp::FFT> forwardFFT;  
         CircularBuffer<float> analysisBuffer;
         std::vector<float> window;
+        std::vector<float> frequencySpectrum;
 
         std::unique_ptr<juce::dsp::WindowingFunction< float >> windowFunction;
 
