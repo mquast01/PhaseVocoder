@@ -15,23 +15,24 @@ PhaseVocoder::PhaseVocoder(int _fftOrder, int _overlap) :
 
 void PhaseVocoder::process(float *buffer, int bufferSize) {
     
-    DBG(" ");
-    DBG("Processing samples #" << buffer[0] << " " << buffer[1] << " " << buffer[2] << "...");
+    //DBG(" ");
+    //DBG("Processing samples #" << buffer[0] << " " << buffer[1] << " " << buffer[2] << "...");
+    float *data = analysisBuffer.getData();
+    int maxSize = analysisBuffer.getMaxSize();
     for(int i = 0, j = 0; i < bufferSize; i++) {
         analysisBuffer.writeSample(buffer[i]);
-        float *data = analysisBuffer.getData();
         if(analysisBuffer.isFull()) {
             //apply window function
-            windowFunction->multiplyWithWindowingTable(data, 1024);
+            windowFunction->multiplyWithWindowingTable(data, maxSize);
             //FFT transform
-            std::fill(frequencySpectrum.begin(), frequencySpectrum.end(), 0);
+            std::fill(frequencySpectrum.begin(), frequencySpectrum.end(), 0.0f);
             std::copy(data, data + fftSize, frequencySpectrum.data());
             forwardFFT->performFrequencyOnlyForwardTransform(frequencySpectrum.data());
             //iFFT transform
             forwardFFT->performRealOnlyInverseTransform(frequencySpectrum.data());
-            j = 0;
-        } else j++;
-        //std::copy(data, data, buffer);
+            //buffer[i] = 0;
+            j = i;
+        };
     }
 }
 

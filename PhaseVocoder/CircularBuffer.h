@@ -17,6 +17,7 @@ class CircularBuffer
 
         int getMaxSize();
         bool isFull();
+        int getIndex();
 
     private:
         std::vector<FloatType> buffer;
